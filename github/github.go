@@ -52,6 +52,11 @@ const (
 	// https://developer.github.com/changes/2014-12-09-new-attributes-for-stars-api/
 	mediaTypeStarringPreview = "application/vnd.github.v3.star+json"
 
+	//https://developer.github.com/v3/media/
+	mediaTypeDiff = "application/vnd.github.v3.diff"
+	mediaTypePatch = "application/vnd.github.v3.patch"
+	mediaTypeSha = "application/vnd.github.v3.sha"
+
 	// https://developer.github.com/changes/2015-11-11-protected-branches-api/
 	mediaTypeProtectedBranchesPreview = "application/vnd.github.loki-preview+json"
 
@@ -81,6 +86,8 @@ const (
 
 	// https://developer.github.com/changes/2016-04-21-oauth-authorizations-grants-api-preview/
 	mediaTypeOAuthGrantAuthorizationsPreview = "application/vnd.github.damage-preview+json"
+
+
 )
 
 // A Client manages communication with the GitHub API.
@@ -139,6 +146,16 @@ type ListOptions struct {
 // UploadOptions specifies the parameters to methods that support uploads.
 type UploadOptions struct {
 	Name string `url:"name,omitempty"`
+}
+
+type MediaRawType int
+const (
+	Diff MediaRawType = 1 + iota
+	Patch
+)
+
+type MediaRawTypeOption struct {
+	Type MediaRawType
 }
 
 // addOptions adds the parameters in opt as URL query parameters to s.  opt

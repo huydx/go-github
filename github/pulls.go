@@ -8,6 +8,7 @@ package github
 import (
 	"fmt"
 	"time"
+	"bytes"
 )
 
 // PullRequestsService handles communication with the pull request related
@@ -128,6 +129,29 @@ func (s *PullRequestsService) Get(owner string, repo string, number int) (*PullR
 	}
 
 	return pull, resp, err
+}
+
+// Get pull request raw format (diff or patch)
+func (s *PullRequestsService) GetRaw(owner string, repo string, number int, opt *MediaRawTypeOption) (string, *Response, error) {
+	u := fmt.Sprintf("repos/%v/%v/pulls/%d", owner, repo, number)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	if opt.Type == Diff {
+		req.Header.Add("Accept", mediaTypeDiff)
+	}  else if opt.Type == Patch {
+		req.Header.Add("Accept", mediaTypePatch)
+	}
+
+	ret := new(bytes.Buffer)
+	resp, err := s.client.Do(req, ret)
+	if err != nil {
+		return "", resp, err
+	}
+
+	return string(ret.Bytes()), resp, err
 }
 
 // NewPullRequest represents a new pull request to be created.
